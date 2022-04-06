@@ -3,7 +3,7 @@ import socket
 
  # target host to for client and  # target port number 
 target_host=socket.gethostbyname('www.google.com') 
-target_port=9998     
+target_port=80   
 
 
  # creating client using socket
