@@ -2,8 +2,10 @@
 import socket 
 
  # target host to for client and  # target port number 
-target_host=socket.gethostbyname('www.google.com') 
-target_port=80   
+SERVER_IP="www.google.com"
+PORT=80
+ADDR=(SERVER_IP,PORT)
+
 
 
  # creating client using socket
@@ -11,7 +13,7 @@ target_port=80
 client=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 
 # connecting client with host
-client.connect((target_host,target_port)) 
+client.connect(ADDR) 
 
  # sending some data to host
 client.send(b"GET / HTTP/1.1\r\nHost: google.com\r\n\r\n")

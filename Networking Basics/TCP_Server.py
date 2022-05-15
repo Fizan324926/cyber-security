@@ -1,33 +1,52 @@
 # importing libraries
+from http import server
 import socket 
 import threading  
 
-IP='0.0.0.0'
-port=9998
+#   Declaring  variables
 
-def main():
-    # creating TCP server using socket 
-    server=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+SERVER_IP=socket.gethostbyname(socket.gethostname())
+PORT=9998
+ADDR=(SERVER_IP,PORT)
+HEADER=64
+FORMAT='UTF-8'
+DISCONNECT_MSG='!DISCONNECT'
 
-    # bind server to start listening for maximum of 5 back log connections
-    server.bind((IP,port))
-    server.listen(5)
-    print(f'Listening on {IP}:{port}')
+# creating TCP server using socket
 
+server=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+server.bind(ADDR)
+
+# function to start server and listing for clients
+
+def start():
+    server.listen()
+    print(f"[LISTENING] server is listening on {SERVER_IP}")
     while True:
-        # when client connects we get both its address and client info
-        client,addr=server.accept()
-        print(f'[*] Accepted connection from {addr[0]}:{addr[1]}')
+        conn,addr=server.accept()  # get client connection
+        thread=threading.Thread(target=handle_client,args=(conn,addr))
+        thread.start()
+        print(f"[ACTIVE CONNECTIONS] {threading.activeCount()-1}")
 
-        # creating thread for client with client handler function
-        client_handler=threading.Thread(target=handle_client,args=(client,))
-        client_handler.start()
 
-# function to handle client when it connects
-def handle_client(client_sock):
-    with client_sock as sock:
-        request=sock.recv(4096)
-        print(f'[*] Received: {request.decode("utf-8")}')
-        request.send('ACK')
+# function to handle clientvwhen it connects
+
+def handle_client(conn,addr):
+    print(f"[NEW CONNECTION] {addr} connected!")
+    connected=True
+    while connected:
+        msg_length=conn.recv(HEADER).decode(FORMAT)
+        if msg_length:
+            msg_length=int(msg_length)
+            msg=conn.recv(msg_length).decode(FORMAT)
+            if msg==DISCONNECT_MSG:
+                connected=False
+            print(f"[{addr}] {msg}")
+            conn.send('MSG Received! '.decode(FORMAT))
+    conn.close()
+
+
+
 if __name__=='__main__':
-    main()
+    print(f'[STARTING] server is starting...')
+    start()
