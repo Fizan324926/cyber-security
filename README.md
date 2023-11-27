@@ -55,11 +55,3 @@ A simple web crawler script that explores and extracts links from a given websit
 A script to change the MAC address of a network interface for anonymity or security purposes.
 
 Feel free to explore each script's source code for detailed comments and usage instructions.
-
-## Contributing
-
-If you find any issues or have suggestions for improvements, feel free to contribute! Follow the [contribution guidelines](CONTRIBUTING.md) for more details.
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
